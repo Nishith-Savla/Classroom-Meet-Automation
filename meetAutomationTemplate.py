@@ -34,7 +34,7 @@ option.add_argument("--start-maximized")
 option.add_experimental_option("prefs", { "profile.default_content_setting_values.notifications": 2, "profile.default_content_setting_values.media_stream_mic":1 , "profile.default_content_setting_values.media_stream_camera": 1})
 
 # Launch chrome 
-browser = webdriver.Chrome(executable_path="C:/Users/nishi/chromedriver.exe", options=option)
+browser = webdriver.Chrome(executable_path="YOUR CHROMEDRIVER PATH", options=option)
 
 # Go to google account login page
 browser.get("https://accounts.google.com/")
