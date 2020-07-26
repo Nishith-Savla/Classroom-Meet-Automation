@@ -64,4 +64,5 @@ link = '//*[@id="yDmH0d"]/div[2]/div[2]/div[1]/div/div[2]/div[2]/span/a/div'
 try:
     browser.find_element_by_xpath(link).click()
 except:
+    browser.minimize_window()
     print("\nNo Meet Link found :(\n")
