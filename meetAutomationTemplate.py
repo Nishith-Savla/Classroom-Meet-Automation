@@ -1,29 +1,32 @@
+import sys
 import time
+
 from selenium import webdriver
 
+
 # Get the respective class path based on input
-def getClassPath(classPath):
+def get_class_path(classPath):
     # You may have to change this as per your need
-    if(subject == "CO" or subject == "co"): 
+    if subject.casefold() == "co":
         classPath = '//*[@id="yDmH0d"]/div[2]/div/div[1]/div/ol/li[1]/div[1]/div[3]/h2/a[1]/div[1]'
-    elif(subject == "C++" or subject == "c++"):
+    elif subject.casefold() == "c++" :
         classPath = '//*[@id="yDmH0d"]/div[2]/div/div[1]/div/ol/li[2]/div[1]/div[3]/h2/a[1]/div[1]'
-    elif(subject == "CN" or subject == "cn"):
+    elif subject.casefold() == "cn" :
         classPath = '//*[@id="yDmH0d"]/div[2]/div[1]/div[1]/div/ol/li[3]/div[1]/div[3]/h2/a[1]/div[1]'
-    elif(subject == "DE" or subject == "de"):
+    elif subject.casefold() == "de" :
         classPath = '//*[@id="yDmH0d"]/div[2]/div[1]/div[1]/div/ol/li[4]/div[1]/div[3]/h2/a[1]/div[1]'
     else:
         print("\nEnter a valid class!!\n")
     return classPath
 
 # Proceed after entering email id 
-def enterEmail(): 
+def enter_email(): 
     browser.find_element_by_xpath("//*[@id='identifierId']").send_keys("YOUR EMAIL ID")
     browser.find_element_by_xpath("//*[@id='identifierNext']/div/button/div[2]").click()
     browser.implicitly_wait(10)
 
 # Proceed after entering password
-def enterPassword():
+def enter_password():
     browser.find_element_by_xpath("//*[@id='password']/div[1]/div/div[1]/input").send_keys("YOUR PASSWORD")
     browser.find_element_by_xpath("//*[@id='passwordNext']/div/button/div[2]").click()
 
@@ -40,12 +43,17 @@ browser = webdriver.Chrome(executable_path="YOUR CHROMEDRIVER PATH", options=opt
 browser.get("https://accounts.google.com/")
 
 # Enter email and password
-enterEmail()
+enter_email()
 try:
-    enterPassword()
+    enter_password()
 except :
-    time.sleep(5)
-    enterPassword()
+    try:
+        time.sleep(5)
+        enter_password()
+    except:
+        browser.minimize_window()
+        print("This account isn't supported perhaps because it is protected by google")
+        sys.exit(-1)
 
 # Get the subject input and then get back to the browser
 browser.minimize_window()
@@ -54,7 +62,7 @@ browser.maximize_window()
 browser.get("https://classroom.google.com/u/0/h")
 classPath = ""
 while(classPath == ""):
-    classPath = getClassPath(classPath)
+    classPath = get_class_path(classPath)
 
 # Open the class with the class path
 browser.find_element_by_xpath(classPath).click()
