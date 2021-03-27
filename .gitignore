@@ -1,1 +1,6 @@
-meetAutomation.py
+# Autogenered dirs
+.idea/
+**/__pycache__
+
+# Configuration
+conf.py
