@@ -37,7 +37,8 @@ def login(driver, email, password):
     wait = WebDriverWait(driver, 10)
     wait.until(ec.presence_of_element_located((  # Ignoring 'E' to handle both cases
         By.XPATH, 'input[contains(@aria-label, "mail") or @id="identifierId"]'))).send_keys(email)
-    next_button = driver.find_element_by_xpath('//button/*[contains(text(),"Next")]')
+    next_button = driver.find_element_by_xpath(
+        '//button/*[contains(text(),"Next")]')
     next_button.click()  # //*[@id="identifierNext"]/div/button
 
     try:
@@ -51,14 +52,16 @@ def login(driver, email, password):
 
 
 if __name__ == '__main__':
-    driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, options=options)  # Launch chrome
+    driver = webdriver.Chrome(
+        executable_path=CHROMEDRIVER_PATH, options=options)  # Launch chrome
     options = webdriver.ChromeOptions()  # Options to start chrome with
     options.add_argument("--start-maximized")
     # Block notifications and allow mic and camera
     options.add_experimental_option("prefs", {"profile.default_content_setting_values.notifications": 2,
                                               "profile.default_content_setting_values.media_stream_mic": 1,
                                               "profile.default_content_setting_values.media_stream_camera": 1})
-    driver.get("https://accounts.google.com/")  # Go to google account login page
+    # Go to google account login page
+    driver.get("https://accounts.google.com/")
     login(driver, EMAIL, PASSWORD)  # Login to google account
 
     # Get the subject input and then get back to the browser
