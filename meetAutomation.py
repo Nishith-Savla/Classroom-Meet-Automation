@@ -75,7 +75,10 @@ if __name__ == '__main__':
         input("Close the window(y/n)?: ").strip() == 'y' and driver.close()
     else:
         driver.switch_to.window(driver.window_handles[1])
-        join_button = WebDriverWait(driver, 30).until(ec.presence_of_element_located((By.XPATH, '//*[contains(text(), "Join now")]')))
-        wait.until(ec.element_to_be_clickable((By.XPATH, '//div[contains(@aria-label, "mic")]'))).click()
-        wait.until(ec.element_to_be_clickable((By.XPATH, '//div[contains(@aria-label, "camera")]'))).click()
+        join_button = WebDriverWait(driver, 30).until(
+            ec.presence_of_element_located((By.XPATH, '//*[contains(text(), "Join now")]')))
+        wait.until(ec.element_to_be_clickable(
+            (By.XPATH, '//div[contains(@aria-label, "mic")]'))).click()
+        wait.until(ec.element_to_be_clickable(
+            (By.XPATH, '//div[contains(@aria-label, "camera")]'))).click()
         join_button.click()
