@@ -3,16 +3,16 @@ import sys
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.wait import WebDriverWait
 
-from conf import EMAIL, PASSWORD, CHROMEDRIVER_PATH, SUBJECT_CODES
+from conf import CHROMEDRIVER_PATH, EMAIL, PASSWORD, SUBJECT_CODES
 
 
 # Get the respective class path based on input
 def get_class_path(subject, translate_to_lower_case=False):
-    to_compare = 'translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")' \
-        if translate_to_lower_case else "text()"
+    to_compare = 'translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ",\
+    "abcdefghijklmnopqrstuvwxyz")' if translate_to_lower_case else "text()"
     try:
         return f'//div[contains({to_compare}, "{SUBJECT_CODES[subject]}")]'
     except KeyError:
@@ -21,32 +21,44 @@ def get_class_path(subject, translate_to_lower_case=False):
 
 # Proceed after entering email id
 def login(driver, email, password):
-    # driver.find_element_by_xpath('//input[contains(@aria-label, "mail") or @id="identifierId"]').send_keys(email)
     wait = WebDriverWait(driver, 10)
-    wait.until(ec.presence_of_element_located((  # Ignoring 'E' to handle both cases
-        By.XPATH, '//input[contains(@aria-label, "mail") or @id="identifierId"]'))).send_keys(email)
-    wait.until(ec.element_to_be_clickable((  # Ignoring 'E' to handle both cases
-        By.XPATH, '//button/*[contains(text(),"Next")]//parent::button'))).click()
+    # Ignoring 'E' to handle both cases
+    wait.until(ec.presence_of_element_located((
+        By.XPATH, '//input[contains(@aria-label,"mail") or @id="identifierId"]'
+    ))).send_keys(email)
+    # Ignoring 'E' to handle both cases
+    wait.until(ec.element_to_be_clickable((
+        By.XPATH, '//button/*[contains(text(),"Next")]//parent::button'
+    ))).click()
 
     try:
-        wait.until(ec.element_to_be_clickable((  # Ignoring 'P' to handle both cases
-            By.XPATH, '//input[contains(@aria-label, "assword") or @type="password"]'))).send_keys(password)
+        # Ignoring 'P' to handle both cases
+        wait.until(ec.element_to_be_clickable((
+            By.XPATH, '//input[contains(@aria-label, "assword") or '
+                      '@type="password"]'))).send_keys(password)
     except TimeoutException:
-        print("This account isn't supported perhaps because it is protected by google")
+        print("This account isn't supported :( "
+              "Perhaps because it is protected by google")
         sys.exit(-1)
     else:
-        wait.until(ec.element_to_be_clickable((  # Ignoring 'E' to handle both cases
-            By.XPATH, '//button/*[contains(text(),"Next")]//parent::button'))).click()  # //*[@id="passwordNext"]/div/button
+        # Ignoring 'E' to handle both cases
+        wait.until(ec.element_to_be_clickable((
+            By.XPATH, '//button/*[contains(text(),"Next")]//parent::button'
+        ))).click()
 
 
 if __name__ == '__main__':
     options = webdriver.ChromeOptions()  # Options to start chrome with
     # Block notifications and allow mic and camera
-    options.add_experimental_option("prefs", {"profile.default_content_setting_values.notifications": 2,
-                                              "profile.default_content_setting_values.media_stream_mic": 1,
-                                              "profile.default_content_setting_values.media_stream_camera": 1})
-    driver = webdriver.Chrome(
-        executable_path=CHROMEDRIVER_PATH, options=options)  # Launch chrome
+    options.add_experimental_option(
+        "prefs",
+        {"profile.default_content_setting_values.notifications": 2,
+         "profile.default_content_setting_values.media_stream_mic": 1,
+         "profile.default_content_setting_values.media_stream_camera": 1}
+    )
+    # Launch chrome
+    driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH,
+                              options=options)
 
     driver.implicitly_wait(10)
 
@@ -75,7 +87,15 @@ if __name__ == '__main__':
         input("Close the window(y/n)?: ").strip() == 'y' and driver.close()
     else:
         driver.switch_to.window(driver.window_handles[1])
-        join_button = WebDriverWait(driver, 30).until(ec.presence_of_element_located((By.XPATH, '//*[contains(text(), "Join now")]')))
-        wait.until(ec.element_to_be_clickable((By.XPATH, '//div[contains(@aria-label, "mic")]'))).click()
-        wait.until(ec.element_to_be_clickable((By.XPATH, '//div[contains(@aria-label, "camera")]'))).click()
+
+        join_button = WebDriverWait(driver, 30).until(
+            ec.presence_of_element_located((
+                By.XPATH, '//*[contains(text(), "Join now")]')))
+
+        wait.until(ec.element_to_be_clickable(
+            (By.XPATH, '//div[contains(@aria-label, "mic")]'))).click()
+
+        wait.until(ec.element_to_be_clickable(
+            (By.XPATH, '//div[contains(@aria-label, "camera")]'))).click()
+
         join_button.click()
