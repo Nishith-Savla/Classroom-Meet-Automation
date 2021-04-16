@@ -82,7 +82,7 @@ if __name__ == '__main__':
         print("No Meet Link found :(")
         input("Close the window(y/n)?: ").strip() == 'y' and driver.close()
     else:
-        # Switch to the google meet tab 
+        # Switch to the google meet tab
         # May not work if there are multiple chromedriver windows open
         driver.switch_to.window(driver.window_handles[1])
 
