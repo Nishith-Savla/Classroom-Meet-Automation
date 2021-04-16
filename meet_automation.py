@@ -23,13 +23,12 @@ def get_class_path(subject, translate_to_lower_case=False):
 def login(driver, email, password):
     wait = WebDriverWait(driver, 10)
     # Ignoring 'E' to handle both cases
-    wait.until(ec.presence_of_element_located((
-        By.XPATH, '//input[contains(@aria-label,"mail") or @id="identifierId"]'
-    ))).send_keys(email)
+    driver.find_element_by_xpath(
+        '//input[contains(@aria-label,"mail") or @id="identifierId"]'
+    ).send_keys(email)
     # Ignoring 'E' to handle both cases
-    wait.until(ec.element_to_be_clickable((
-        By.XPATH, '//button/*[contains(text(),"Next")]//parent::button'
-    ))).click()
+    driver.find_element_by_xpath(
+        '//button/*[contains(text(),"Next")]//parent::button').click()
 
     try:
         # Ignoring 'P' to handle both cases
@@ -42,30 +41,27 @@ def login(driver, email, password):
         sys.exit(-1)
     else:
         # Ignoring 'E' to handle both cases
-        wait.until(ec.element_to_be_clickable((
-            By.XPATH, '//button/*[contains(text(),"Next")]//parent::button'
-        ))).click()
+        driver.find_element_by_xpath(
+            '//button/*[contains(text(),"Next")]//parent::button').click()
 
 
 if __name__ == '__main__':
     options = webdriver.ChromeOptions()  # Options to start chrome with
-    # Block notifications and allow mic and camera
     options.add_experimental_option(
-        "prefs",
+        "prefs",  # Block notifications and allow mic and camera
         {"profile.default_content_setting_values.notifications": 2,
          "profile.default_content_setting_values.media_stream_mic": 1,
          "profile.default_content_setting_values.media_stream_camera": 1}
     )
-    # Launch chrome
-    driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH,
-                              options=options)
+    driver = webdriver.Chrome(
+        executable_path=CHROMEDRIVER_PATH, options=options)
 
     driver.implicitly_wait(10)
 
     driver.get("https://accounts.google.com/")
     login(driver, EMAIL, PASSWORD)
 
-    wait = WebDriverWait(driver, 20)
+    wait = WebDriverWait(driver, 10)
 
     # Get the subject input and then get back to the browser
     subject = input("Enter the subject: ")
@@ -86,11 +82,12 @@ if __name__ == '__main__':
         print("No Meet Link found :(")
         input("Close the window(y/n)?: ").strip() == 'y' and driver.close()
     else:
+        # Switch to the google meet tab 
+        # May not work if there are multiple chromedriver windows open
         driver.switch_to.window(driver.window_handles[1])
 
-        join_button = WebDriverWait(driver, 30).until(
-            ec.presence_of_element_located((
-                By.XPATH, '//*[contains(text(), "Join now")]')))
+        join_button = driver.find_element_by_xpath(
+                '//*[contains(text(), "Join now")]'))
 
         wait.until(ec.element_to_be_clickable(
             (By.XPATH, '//div[contains(@aria-label, "mic")]'))).click()
