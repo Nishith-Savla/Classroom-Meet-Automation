@@ -21,7 +21,6 @@ def get_class_path(subject, translate_to_lower_case=False):
 
 # Proceed after entering email id
 def login(driver, email, password):
-    wait = WebDriverWait(driver, 10)
     # Ignoring 'E' to handle both cases
     driver.find_element_by_xpath(
         '//input[contains(@aria-label,"mail") or @id="identifierId"]'
@@ -32,7 +31,7 @@ def login(driver, email, password):
 
     try:
         # Ignoring 'P' to handle both cases
-        wait.until(ec.element_to_be_clickable((
+        WebDriverWait(driver, 10).until(ec.element_to_be_clickable((
             By.XPATH, '//input[contains(@aria-label, "assword") or '
                       '@type="password"]'))).send_keys(password)
     except TimeoutException:
@@ -87,7 +86,7 @@ if __name__ == '__main__':
         driver.switch_to.window(driver.window_handles[1])
 
         join_button = driver.find_element_by_xpath(
-                '//*[contains(text(), "Join now")]'))
+            '//*[contains(text(), "Join now")]')
 
         wait.until(ec.element_to_be_clickable(
             (By.XPATH, '//div[contains(@aria-label, "mic")]'))).click()
